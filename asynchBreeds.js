@@ -1,32 +1,42 @@
 // asyncBreeds.js
 const fs = require('fs');
 
-const breedDetailsFromFile = function(breed, callback) { // Added a callback function (breed, callback)
+const breedDetailsFromFile = function (breed, callback) { // Added a callback function (breed, callback)
   console.log('breedDetailsFromFile: Calling readFile...');
   fs.readFile(`./data/${breed}.txt`, 'utf8', (error, data) => {
+    // There is no data 
     console.log("In readFile's Callback: it has the data.");
-    // ISSUE: Returning from *inner* callback function, not breedDetailsFromFile.
-    if (!error) callback(data);
+    // ISSUE: Returning from *inner* callback function, not breedDetailsFromFilex`.
+    // if (!error) data;
+    if (!error) {
+      callback(data);
+    }
   });
-  // ISSUE: Attempting to return data out here will also not work.
-  //        Currently not returning anything from here, so breedDetailsFromFile function returns undefined.
+};
+// ISSUE: Attempting to return data out here will also not work.
+//       Currently not returning anything from here, so breedDetailsFromFile function returns undefined.
+const callback = (breed) => {
+  console.log('Return Value: ', breed);
 };
 
 // we try to get the return value
-const bombay = breedDetailsFromFile('Bombay');
-console.log('Return Value: ', bombay); // => will NOT print out details, instead we will see undefined!
+breedDetailsFromFile('Bombay', callback);
+// console.log('Return Value: ', bombay); // => will NOT print out details, instead we will see undefined!
+
 
 // The Return Value console output above will not display the file data because our breedDetailsFromFile 
 // function will always return undefined.
 
+
+
 /*
-1: const bombay > 2: breedDetailsFromFile (Bombay.txt) 
+1: const bombay > 2: breedDetailsFromFile (Bombay.txt)
 3: RETURNS undefined IMMEDIATLEY (SINCE ITS ASYNC: It takes in a callback and returns immediatley, Not waiting on required code)
 4. After readFile returns undefined, breedDetailsFromFile has no other code to exectute thereafter and also returns undefined
 5. readFile still has work to do, It reads from disk
 6. Executes callback later
 7. HOWEVER, the breeDetailsFromFile function already finished running and returned undefined before it gets the data
-8. return data line within readFile's vallback is only returning from callback function 
+8. return data line within readFile's vallback is only returning from callback function
 NOT from breedDetailsFromFile!
 
 )
@@ -41,4 +51,4 @@ The console log statements in our code also help reveal the control flow:
 > node asyncBreeds.js
 breedDetailsFromFile: Calling readFile...
 Return Value: undefined
-In readFile's Callback: it has the data.
+In readFile's Callback: it has the data. */
